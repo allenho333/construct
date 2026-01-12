@@ -31,7 +31,9 @@ export default function LoginPage() {
                         const formData = new FormData();
                         formData.append("username", values.username);
                         formData.append("password", values.password);
-                        formAction(formData);
+                        startTransition(() => {
+                            formAction(formData);
+                        });
                     }}
                 >
                     <Form.Header>Please log in to continue</Form.Header>
@@ -52,7 +54,7 @@ export default function LoginPage() {
                 </Form>
             </Card>
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                Don't have an account? <Link href="/register" style={{ color: 'var(--primary)' }}>Register</Link>
+                Don&apos;t have an account? <Link href="/register" style={{ color: 'var(--primary)' }}>Register</Link>
             </div>
         </div>
     );

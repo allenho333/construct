@@ -31,7 +31,9 @@ export default function RegisterPage() {
                         formData.append("username", values.username);
                         formData.append("password", values.password);
                         formData.append("confirmPassword", values.confirmPassword);
-                        formAction(formData);
+                        startTransition(() => {
+                            formAction(formData);
+                        });
                     }}
                 >
                     <Form.Header>Create a new account</Form.Header>
