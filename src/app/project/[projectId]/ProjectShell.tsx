@@ -6,7 +6,6 @@ import { Bars3Icon, XMarkIcon, ChevronLeftIcon } from "@heroicons/react/24/outli
 import { usePathname } from "next/navigation";
 import { ActionSheet } from "antd-mobile";
 import { createInspection } from "@/app/actions";
-import ThemeToggle from "@/components/ThemeToggle";
 
 export default function ProjectShell({
     children,
@@ -48,7 +47,6 @@ export default function ProjectShell({
                     <span style={{ fontWeight: 600, fontSize: "1.1rem" }}>{projectName}</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                    <ThemeToggle />
                     <Link href="/" style={{ color: "var(--primary)" }}>
                         <ChevronLeftIcon width={24} />
                     </Link>
