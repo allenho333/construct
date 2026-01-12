@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import ThemeToggle from "@/components/ThemeToggle";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const projects = await prisma.project.findMany();
 
