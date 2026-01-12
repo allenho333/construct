@@ -160,15 +160,7 @@ export default function ProjectShell({
                 </aside>
 
                 {/* Desktop Styles Injection for Sidebar Persistence */}
-                <style jsx global>{`
-                  @media (min-width: 768px) {
-                    .sidebar-footer {
-                       margin-top: auto; /* Push to bottom */
-                       padding-top: 1rem;
-                       border-top: 1px solid var(--border-color);
-                    }
-                  }
-                `}</style>
+                {/* Backdrop */}
 
                 {/* Backdrop */}
                 {isSidebarOpen && (
@@ -201,6 +193,11 @@ export default function ProjectShell({
           }
           .mobile-header .menu-toggle {
              display: none;
+          }
+          .sidebar-footer {
+             margin-top: auto;
+             padding-top: 1rem;
+             border-top: 1px solid var(--border-color);
           }
         }
       `}</style>
