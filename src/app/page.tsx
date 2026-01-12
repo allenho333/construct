@@ -1,13 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
+import ThemeToggle from "@/components/ThemeToggle";
+
 export default async function Home() {
   const projects = await prisma.project.findMany();
 
   return (
     <div style={{ padding: "2rem" }}>
       <main>
-        <h1>Construction Project Manager</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <h1>Construction Project Manager</h1>
+          <ThemeToggle />
+        </div>
         <p>Select a project to get started.</p>
 
         <div style={{ marginTop: "2rem" }}>
