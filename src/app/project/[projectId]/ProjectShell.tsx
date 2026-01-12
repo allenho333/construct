@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Bars3Icon, XMarkIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { usePathname } from "next/navigation";
+import { Bars3Icon, XMarkIcon, ChevronLeftIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { usePathname, useRouter } from "next/navigation";
 import { ActionSheet } from "antd-mobile";
-import { createInspection } from "@/app/actions";
+import { createInspection, deleteInspection } from "@/app/actions";
 
 export default function ProjectShell({
     children,
@@ -23,11 +23,27 @@ export default function ProjectShell({
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [actionSheetVisible, setActionSheetVisible] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
 
     const handleCreate = async (typeId: string) => {
         setActionSheetVisible(false);
         setIsSidebarOpen(false); // Close sidebar if open
         await createInspection(projectId, typeId);
+    };
+
+    const handleDelete = async (e: React.MouseEvent, instanceId: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (confirm("Are you sure you want to delete this inspection? This action cannot be undone.")) {
+            // Delete
+            await deleteInspection(instanceId, projectId);
+
+            // If we are currently on this page, go back to project root
+            if (pathname.includes(instanceId)) {
+                router.push(`/project/${projectId}`);
+            }
+        }
     };
 
     const actions = inspectionTypes.map(type => ({
@@ -99,11 +115,30 @@ export default function ProjectShell({
                                         color: isActive ? "var(--primary-foreground)" : "var(--foreground)",
                                         fontWeight: isActive ? 600 : 400,
                                         fontSize: "0.9rem",
-                                        transition: "all 0.2s"
+                                        transition: "all 0.2s",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center"
                                     }}
                                 >
-                                    <div style={{ marginBottom: "0.25rem" }}>{inst.itpNumber || "No Number"}</div>
-                                    <div style={{ fontSize: "0.8rem", opacity: 0.8 }}>{inst.inspectionType.name}</div>
+                                    <div>
+                                        <div style={{ marginBottom: "0.25rem" }}>{inst.itpNumber || "No Number"}</div>
+                                        <div style={{ fontSize: "0.8rem", opacity: 0.8 }}>{inst.inspectionType.name}</div>
+                                    </div>
+                                    <button
+                                        onClick={(e) => handleDelete(e, inst.id)}
+                                        style={{
+                                            background: "none",
+                                            border: "none",
+                                            color: isActive ? "inherit" : "var(--danger)",
+                                            opacity: 0.7,
+                                            cursor: "pointer",
+                                            padding: "4px"
+                                        }}
+                                        title="Delete Inspection"
+                                    >
+                                        <TrashIcon width={18} />
+                                    </button>
                                 </Link>
                             );
                         })}

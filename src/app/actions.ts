@@ -37,7 +37,21 @@ export async function createInspection(projectId: string, inspectionTypeId: stri
     // The current form implementation handles missing results by showing "Pending".
     // So we can skip pre-populating NodeResults for now.
 
-    // 5. Revalidate and Redirect
     revalidatePath(`/project/${projectId}`);
     redirect(`/project/${projectId}/${newInstance.id}`);
+}
+
+export async function deleteInspection(instanceId: string, projectId: string) {
+    // 1. Delete associated results first (since we don't have Cascade in schema yet)
+    await prisma.inspectionNodeResult.deleteMany({
+        where: { instanceId }
+    });
+
+    // 2. Delete the instance
+    await prisma.inspectionInstance.delete({
+        where: { id: instanceId }
+    });
+
+    // 3. Revalidate
+    revalidatePath(`/project/${projectId}`);
 }
