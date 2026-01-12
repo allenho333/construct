@@ -27,17 +27,17 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #fafafa;
+    --background: #121212;
+    --foreground: #ffffff;
 
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
+    --primary: #60a5fa;
+    --primary-foreground: #000000;
 
-    --secondary: #262626;
-    --secondary-foreground: #ededed;
+    --secondary: #27272a;
+    --secondary-foreground: #ffffff;
 
-    --border-color: #262626;
-    --input-background: #171717;
+    --border-color: #3f3f46;
+    --input-background: #18181b;
   }
 }
 
