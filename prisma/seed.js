@@ -1,11 +1,25 @@
 const { PrismaClient } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
 async function main() {
     console.log('Seeding database...');
+
+    // 0. Create Admin User
+    const hashedPassword = await bcrypt.hash("admin", 10);
+    const adminUser = await prisma.user.upsert({
+        where: { username: "admin" },
+        update: {},
+        create: {
+            username: "admin",
+            password: hashedPassword
+        }
+    });
+    console.log(`Admin user seeded: ${adminUser.username}`);
+
 
     // 1. Create Default Project
     const project = await prisma.project.upsert({

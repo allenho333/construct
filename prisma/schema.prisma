@@ -73,3 +73,10 @@ model InspectionNodeResult {
   instance       InspectionInstance     @relation(fields: [instanceId], references: [id])
   nodeTemplate   InspectionNodeTemplate @relation(fields: [nodeTemplateId], references: [id])
 }
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String   // Hashed
+  createdAt DateTime @default(now())
+}
