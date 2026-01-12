@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState } from "react";
+import React, { useActionState, startTransition } from "react";
 import { Form, Input, Button, Card, Toast } from "antd-mobile";
 import { register } from "@/app/auth-actions";
 import Link from "next/link";
