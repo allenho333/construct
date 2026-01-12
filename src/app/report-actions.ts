@@ -4,17 +4,21 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import nodemailer from "nodemailer";
 
-// Mock transport for development/demo
-// In production, replace with real credentials or a service like Resend/SendGrid
-const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email", // Placeholder
-    port: 587,
-    secure: false,
+// Configure transporter based on environment variables
+const smtpConfig = {
+    host: process.env.SMTP_HOST || "smtp.ethereal.email", // Default to mock if not set
+    port: parseInt(process.env.SMTP_PORT || "587"),
+    secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
     auth: {
-        user: "ethereal_user",
-        pass: "ethereal_pass",
+        user: process.env.SMTP_USER || "ethereal_user",
+        pass: process.env.SMTP_PASS || "ethereal_pass",
     },
-});
+};
+
+const transporter = nodemailer.createTransport(smtpConfig);
+
+// Helper to check if we are using real credentials
+const isRealEmail = process.env.SMTP_HOST && process.env.SMTP_USER;
 
 export async function sendProjectReport(projectId: string, email: string) {
     const session = await getSession();
@@ -58,23 +62,24 @@ export async function sendProjectReport(projectId: string, email: string) {
 
     // 4. Send Email
     try {
-        // For demo purposes, we'll log the email content instead of failing on invalid credentials
-        console.log("---------------------------------------------------");
-        console.log(`[MOCK EMAIL] Sending report to: ${email}`);
-        console.log(`Subject: Project Report - ${project.name}`);
-        console.log("Content Preview:", html.substring(0, 100) + "...");
-        console.log("---------------------------------------------------");
-
-        // Attempt actual send if configured (it will fail with placeholder creds but catching error)
-        // await transporter.sendMail({
-        //   from: '"Construct App" <no-reply@construct.app>',
-        //   to: email,
-        //   subject: `Project Report: ${project.name}`,
-        //   html: html,
-        // });
-
-        // Note: We are returning success here because we are "Mocking" the success for the user demo
-        return { success: true, message: `Report sent to ${email} (Check server logs for mock output)` };
+        if (isRealEmail) {
+            console.log(`Sending real email to ${email} via ${process.env.SMTP_HOST}...`);
+            await transporter.sendMail({
+                from: process.env.SMTP_FROM || '"Construct App" <no-reply@construct.app>',
+                to: email,
+                subject: `Project Report: ${project.name}`,
+                html: html,
+            });
+            return { success: true, message: `Report sent to ${email}` };
+        } else {
+            // Mock Mode
+            console.log("---------------------------------------------------");
+            console.log(`[MOCK EMAIL] Sending report to: ${email}`);
+            console.log(`Subject: Project Report - ${project.name}`);
+            console.log("Content Preview:", html.substring(0, 100) + "...");
+            console.log("---------------------------------------------------");
+            return { success: true, message: `Report sent to ${email} (Check server logs for mock output)` };
+        }
     } catch (error) {
         console.error("Email send failed:", error);
         return { error: "Failed to send email" };
@@ -82,6 +87,7 @@ export async function sendProjectReport(projectId: string, email: string) {
 }
 
 export async function getUserEmail() {
+    console.log("getUserEmail called");
     const session = await getSession();
     if (!session || !session.userId) return null;
 

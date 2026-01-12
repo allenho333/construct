@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import InspectionForm from "@/components/InspectionForm";
 
+import ReportActions from "@/components/ReportActions";
+
 export default async function InstancePage({
     params,
 }: {
@@ -33,7 +35,10 @@ export default async function InstancePage({
     return (
         <div>
             <div style={{ marginBottom: "2rem" }}>
-                <h1 style={{ marginBottom: "0.5rem" }}>{instance.inspectionType.name}</h1>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "0.5rem" }}>
+                    <h1 style={{ margin: 0 }}>{instance.inspectionType.name}</h1>
+                    <ReportActions projectId={projectId} />
+                </div>
                 <div style={{ padding: "1rem", background: "var(--secondary)", borderRadius: "var(--radius)" }}>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", fontSize: "0.9rem" }}>
                         <div>
