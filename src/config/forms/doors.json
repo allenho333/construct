@@ -1,0 +1,20 @@
+[
+    {
+        "sectionCode": "DR-01",
+        "name": "Door Installation Inspection",
+        "nodes": [
+            {
+                "name": "Door Schedule",
+                "description": "Verify door schedule.",
+                "inputType": "text",
+                "orderIndex": 1
+            },
+            {
+                "name": "Frame Installation",
+                "description": "Check frame is plumb and square.",
+                "inputType": "yes_no",
+                "orderIndex": 2
+            }
+        ]
+    }
+]

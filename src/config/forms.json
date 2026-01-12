@@ -1,0 +1,75 @@
+[
+    {
+        "sectionCode": "WIN-01",
+        "name": "Windows & Glazing Installation Inspection",
+        "nodes": [
+            {
+                "name": "Window Detail",
+                "description": "Complete window inspection details including code, type, and photos.",
+                "inputType": "form_group",
+                "orderIndex": 0,
+                "options": [
+                    {
+                        "name": "Room Code",
+                        "description": "Enter the room code (e.g., U-W37)",
+                        "inputType": "text"
+                    },
+                    {
+                        "name": "Window Code",
+                        "description": "Enter the window code",
+                        "inputType": "text"
+                    },
+                    {
+                        "name": "Window Type",
+                        "description": "Select the type of window",
+                        "inputType": "select",
+                        "options": [
+                            "Fix",
+                            "Awning",
+                            "Sliding",
+                            "Hinge Door"
+                        ]
+                    },
+                    {
+                        "name": "Window Schedule (Screenshot)",
+                        "description": "Upload a screenshot of the window schedule.",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Window Detail Photo",
+                        "description": "Inspect window details against plan.",
+                        "inputType": "photo"
+                    }
+                ]
+            },
+            {
+                "name": "Install conditions are ready",
+                "description": "Check opening dimensions and substrate conditions.",
+                "inputType": "yes_no",
+                "orderIndex": 1
+            },
+            {
+                "name": "Fixing / Sealant",
+                "description": "Verify fixing method and sealant application.",
+                "inputType": "yes_no",
+                "orderIndex": 2
+            }
+        ]
+    },
+    {
+        "sectionCode": "DR-01",
+        "name": "Door Installation Inspection",
+        "nodes": [
+            {
+                "name": "Door Schedule",
+                "description": "Verify door schedule.",
+                "orderIndex": 1
+            },
+            {
+                "name": "Frame Installation",
+                "description": "Check frame is plumb and square.",
+                "orderIndex": 2
+            }
+        ]
+    }
+]

@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  location    String?
+  assignees   String?
+  responsible String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inspectionInstances InspectionInstance[]
+  inspectionTypes     InspectionType[]
+}
+
+model InspectionType {
+  id          String   @id @default(uuid())
+  projectId   String?
+  name        String
+  sectionCode String?
+  
+  project     Project? @relation(fields: [projectId], references: [id])
+  nodeTemplates InspectionNodeTemplate[]
+  instances   InspectionInstance[]
+}
+
+model InspectionNodeTemplate {
+  id              String   @id @default(uuid())
+  inspectionTypeId String
+  name            String
+  description     String?
+  inputType       String   @default("text") // text, select, photo, yes_no
+  options         String?  // JSON string for select options
+  orderIndex      Int      @default(0)
+
+  inspectionType  InspectionType @relation(fields: [inspectionTypeId], references: [id])
+  results         InspectionNodeResult[]
+}
+
+model InspectionInstance {
+  id               String   @id @default(uuid())
+  projectId        String
+  inspectionTypeId String
+  itpNumber        String?
+  locationReference String?
+  itemReference    String?
+  status           String   @default("Open")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  project          Project        @relation(fields: [projectId], references: [id])
+  inspectionType   InspectionType @relation(fields: [inspectionTypeId], references: [id])
+  nodeResults      InspectionNodeResult[]
+}
+
+model InspectionNodeResult {
+  id             String   @id @default(uuid())
+  instanceId     String
+  nodeTemplateId String
+  status         String   @default("Pending")
+  value          String?  // The actual answer (text, selected option, etc)
+  comments       String?
+  photoUrls      String?
+
+  instance       InspectionInstance     @relation(fields: [instanceId], references: [id])
+  nodeTemplate   InspectionNodeTemplate @relation(fields: [nodeTemplateId], references: [id])
+}
