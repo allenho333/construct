@@ -6,6 +6,7 @@ import { Bars3Icon, XMarkIcon, ChevronLeftIcon, TrashIcon } from "@heroicons/rea
 import { usePathname, useRouter } from "next/navigation";
 import { ActionSheet } from "antd-mobile";
 import { createInspection, deleteInspection } from "@/app/actions";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function ProjectShell({
     children,
@@ -152,7 +153,22 @@ export default function ProjectShell({
                             + New Inspection
                         </button>
                     </div>
+
+                    <div className="sidebar-footer" style={{ marginTop: "auto", paddingTop: "1rem", borderTop: "1px solid var(--border-color)" }}>
+                        <LogoutButton minimal />
+                    </div>
                 </aside>
+
+                {/* Desktop Styles Injection for Sidebar Persistence */}
+                <style jsx global>{`
+                  @media (min-width: 768px) {
+                    .sidebar-footer {
+                       margin-top: auto; /* Push to bottom */
+                       padding-top: 1rem;
+                       border-top: 1px solid var(--border-color);
+                    }
+                  }
+                `}</style>
 
                 {/* Backdrop */}
                 {isSidebarOpen && (

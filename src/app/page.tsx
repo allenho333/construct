@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
 import ThemeToggle from "@/components/ThemeToggle";
+import LogoutButton from "@/components/LogoutButton";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,10 @@ export default async function Home() {
       <main>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
           <h1>Construction Project Manager</h1>
-          <ThemeToggle />
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <LogoutButton />
+            <ThemeToggle />
+          </div>
         </div>
         <p>Select a project to get started.</p>
 
