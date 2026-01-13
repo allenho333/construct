@@ -92,7 +92,7 @@ async function main() {
             data: {
                 projectId: project.id,
                 inspectionTypeId: firstType.id,
-                itpNumber: '012-BW-U37-WIN-01',
+                itpNumber: null,
                 locationReference: 'Block West, Unit 37',
                 itemReference: 'U-W37_W-05',
                 status: 'Open'

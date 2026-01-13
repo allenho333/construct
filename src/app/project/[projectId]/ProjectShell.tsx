@@ -58,13 +58,13 @@ export default function ProjectShell({
             {/* Mobile Header */}
             <header className="mobile-header">
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                    <button className="menu-toggle" onClick={() => setIsSidebarOpen(true)} style={{ background: "none", border: "none" }}>
+                    <button className="menu-toggle" onClick={() => setIsSidebarOpen(true)} style={{ background: "none", border: "none", color: "var(--adm-color-text)" }}>
                         <Bars3Icon width={24} />
                     </button>
                     <span style={{ fontWeight: 600, fontSize: "1.1rem" }}>{projectName}</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                    <Link href="/" style={{ color: "var(--primary)" }}>
+                    <Link href="/" style={{ color: "var(--adm-color-primary)" }}>
                         <ChevronLeftIcon width={24} />
                     </Link>
                 </div>
@@ -81,22 +81,21 @@ export default function ProjectShell({
                         left: 0,
                         bottom: 0,
                         width: "280px",
-                        background: "var(--background)",
-                        borderRight: "1px solid var(--border-color)",
+                        background: "var(--adm-color-background)",
+                        borderRight: "1px solid var(--adm-color-border)",
                         zIndex: 100,
                         transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
                         transition: "transform 0.3s ease",
                         padding: "1rem",
                         display: "flex",
                         flexDirection: "column",
-                        boxShadow: isSidebarOpen ? "var(--shadow)" : "none"
-                        // Note: On desktop we might want this static, but for mobile-first strictness, let's keep it behaving like an app drawer for now or add media query for desktop persistence.
+                        boxShadow: isSidebarOpen ? "0 4px 12px rgba(0,0,0,0.15)" : "none"
                     }}
                     className="sidebar-drawer"
                 >
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-                        <h3>Inspections</h3>
-                        <button onClick={() => setIsSidebarOpen(false)} style={{ background: "none", border: "none" }}>
+                        <h3 style={{ margin: 0 }}>Inspections</h3>
+                        <button onClick={() => setIsSidebarOpen(false)} style={{ background: "none", border: "none", color: 'var(--adm-color-text)' }}>
                             <XMarkIcon width={24} />
                         </button>
                     </div>
@@ -111,9 +110,9 @@ export default function ProjectShell({
                                     onClick={() => setIsSidebarOpen(false)} // Close on navigate
                                     style={{
                                         padding: "0.75rem",
-                                        borderRadius: "var(--radius)",
-                                        background: isActive ? "var(--primary)" : "var(--secondary)",
-                                        color: isActive ? "var(--primary-foreground)" : "var(--foreground)",
+                                        borderRadius: "8px",
+                                        background: isActive ? "var(--adm-color-primary)" : "var(--adm-color-box)",
+                                        color: isActive ? "#fff" : "var(--adm-color-text)",
                                         fontWeight: isActive ? 600 : 400,
                                         fontSize: "0.9rem",
                                         transition: "all 0.2s",
@@ -131,7 +130,7 @@ export default function ProjectShell({
                                         style={{
                                             background: "none",
                                             border: "none",
-                                            color: isActive ? "inherit" : "var(--danger)",
+                                            color: isActive ? "inherit" : "var(--adm-color-danger, #ef4444)",
                                             opacity: 0.7,
                                             cursor: "pointer",
                                             padding: "4px"
@@ -147,14 +146,24 @@ export default function ProjectShell({
 
                     <div style={{ marginTop: "1rem" }}>
                         <button
-                            className="btn btn-secondary"
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                borderRadius: '8px',
+                                border: '1px solid var(--adm-color-border)',
+                                background: 'var(--adm-color-box)',
+                                color: 'var(--adm-color-text)',
+                                cursor: 'pointer',
+                                fontSize: '0.95rem',
+                                fontWeight: 500
+                            }}
                             onClick={() => setActionSheetVisible(true)}
                         >
                             + New Inspection
                         </button>
                     </div>
 
-                    <div className="sidebar-footer" style={{ marginTop: "auto", paddingTop: "1rem", borderTop: "1px solid var(--border-color)" }}>
+                    <div className="sidebar-footer" style={{ marginTop: "auto", paddingTop: "1rem", borderTop: "1px solid var(--adm-color-border)" }}>
                         <LogoutButton minimal />
                     </div>
                 </aside>
@@ -189,7 +198,7 @@ export default function ProjectShell({
             position: relative !important;
             transform: none !important;
             box-shadow: none !important;
-            border-right: 1px solid var(--border-color);
+            border-right: 1px solid var(--adm-color-border) !important;
           }
           .mobile-header .menu-toggle {
              display: none;
@@ -197,7 +206,7 @@ export default function ProjectShell({
           .sidebar-footer {
              margin-top: auto;
              padding-top: 1rem;
-             border-top: 1px solid var(--border-color);
+             border-top: 1px solid var(--adm-color-border) !important;
           }
         }
       `}</style>

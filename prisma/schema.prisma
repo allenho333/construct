@@ -10,6 +10,7 @@ datasource db {
 
 model Project {
   id          String   @id @default(uuid())
+  code        String?  // Custom Project ID/Number
   name        String
   location    String?
   assignees   String?

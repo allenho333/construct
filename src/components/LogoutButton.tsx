@@ -20,7 +20,7 @@ export default function LogoutButton({ minimal = false }: { minimal?: boolean })
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
-                    color: 'var(--danger)',
+                    color: 'var(--adm-color-text)',
                     fontSize: '0.9rem'
                 }}
                 title="Log Out"
@@ -34,10 +34,9 @@ export default function LogoutButton({ minimal = false }: { minimal?: boolean })
     return (
         <Button
             onClick={handleLogout}
-            color="danger"
             fill="none"
             size="small"
-            style={{ padding: '0 8px' }}
+            style={{ padding: '0 8px', color: 'var(--adm-color-text)' }}
         >
             Log Out
         </Button>

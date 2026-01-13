@@ -1,58 +1,162 @@
 [
     {
         "sectionCode": "WIN-01",
-        "name": "Windows & Glazing Installation Inspection",
+        "name": "Window ITP Node Template (Light Level)",
         "nodes": [
             {
-                "name": "Window Detail",
-                "description": "Complete window inspection details including code, type, and photos.",
+                "name": "Room & Item Detail",
+                "description": "Enter room and window identification details.",
                 "inputType": "form_group",
                 "orderIndex": 0,
                 "options": [
                     {
                         "name": "Room Code",
-                        "description": "Enter the room code (e.g., U-W37)",
+                        "description": "(Fill)",
                         "inputType": "text"
                     },
                     {
-                        "name": "Window Code",
-                        "description": "Enter the window code",
+                        "name": "Item Code",
+                        "description": "(Fill, e.g. Window code)",
                         "inputType": "text"
                     },
                     {
-                        "name": "Window Type",
-                        "description": "Select the type of window",
-                        "inputType": "select",
-                        "options": [
-                            "Fix",
-                            "Awning",
-                            "Sliding",
-                            "Hinge Door"
-                        ]
-                    },
-                    {
-                        "name": "Window Schedule (Screenshot)",
-                        "description": "Upload a screenshot of the window schedule.",
-                        "inputType": "photo"
-                    },
-                    {
-                        "name": "Window Detail Photo",
-                        "description": "Inspect window details against plan.",
-                        "inputType": "photo"
+                        "name": "Notice",
+                        "description": "",
+                        "inputType": "text"
                     }
                 ]
             },
             {
-                "name": "Install conditions are ready",
-                "description": "Check opening dimensions and substrate conditions.",
-                "inputType": "yes_no",
-                "orderIndex": 1
+                "name": "Pre-Installation Check (Opening Readiness)",
+                "description": "Ensure the wall opening is clean, flat, and ready for installation. Tip: Take a wide-angle photo showing the entire opening area.",
+                "inputType": "form_group",
+                "orderIndex": 1,
+                "options": [
+                    {
+                        "name": "Photo of window opening",
+                        "description": "Photo of window opening (full view)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Incorrect dimensions",
+                            "Damaged or dirty opening",
+                            "Uneven or unaligned surface"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
             },
             {
-                "name": "Fixing / Sealant",
-                "description": "Verify fixing method and sealant application.",
-                "inputType": "yes_no",
-                "orderIndex": 2
+                "name": "Installation & Visual Alignment",
+                "description": "Confirm the window is visually aligned and check the glass condition for any defects. Tip: Take photos of the full frame from both inside and outside, plus a close-up of the glass.",
+                "inputType": "form_group",
+                "orderIndex": 2,
+                "options": [
+                    {
+                        "name": "Inside photo of window (full view)",
+                        "description": "Inside photo of window (full view)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Cracked or scratched glass",
+                            "Frame misaligned",
+                            "Visible damage to frame"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Gaps & Seals Inspection",
+                "description": "Check for any visible large gaps or daylight showing between the window frame and the wall. Tip: Capture full view photo of all four edges (top, bottom, left, right) from the interior to verify the fit.",
+                "inputType": "form_group",
+                "orderIndex": 3,
+                "options": [
+                    {
+                        "name": "Inside photo of window (full view)",
+                        "description": "Inside photo of window (full view)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Excessive gaps visible",
+                            "Sealant missing or damaged",
+                            "Daylight visible through gaps"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Operation & Functionality Test",
+                "description": "Verify that the window opens, closes, and locks smoothly. Tip: Take one photo of the window in the locked position and one in the open position. Ensure the handle or lock is visible in both.",
+                "inputType": "form_group",
+                "orderIndex": 4,
+                "options": [
+                    {
+                        "name": "Photo of window (Closed & Locked)",
+                        "description": "Photo of window (Closed & Locked)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Window stuck or jammed",
+                            "Lock not functioning",
+                            "Handle loose or broken"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
             }
         ]
     }

@@ -10,12 +10,12 @@ export default function ThemeToggle() {
         <button
             onClick={toggleTheme}
             style={{
-                background: "var(--secondary)",
+                background: "var(--adm-color-box)",
                 border: "none",
                 borderRadius: "50%",
                 padding: "8px",
                 cursor: "pointer",
-                color: "var(--foreground)",
+                color: "var(--adm-color-text)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center"
