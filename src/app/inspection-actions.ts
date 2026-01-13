@@ -36,6 +36,7 @@ export async function submitInspection(instanceId: string, projectId: string) {
         return { success: true, itpNumber };
     } catch (error) {
         console.error("Failed to submit inspection:", error);
+        return { success: false, error: "Failed to submit inspection" };
     }
 }
 
