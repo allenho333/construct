@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { getUserEmail, sendProjectReport } from "@/app/report-actions";
 
-export default function ReportActions({ projectId }: { projectId: string }) {
+export default function ReportActions({ projectId, instanceId }: { projectId: string, instanceId?: string }) {
     // Email Dialog State
     const [loading, setLoading] = useState(false);
     const [dialogVisible, setDialogVisible] = useState(false);
@@ -45,7 +45,7 @@ export default function ReportActions({ projectId }: { projectId: string }) {
         setLoading(true);
 
         try {
-            const result = await sendProjectReport(projectId, email);
+            const result = await sendProjectReport(projectId, email, instanceId);
             if (result.success) {
                 setStatusMsg({ type: 'success', text: "Report sent successfully!" });
                 setTimeout(() => {
@@ -65,7 +65,7 @@ export default function ReportActions({ projectId }: { projectId: string }) {
 
     // --- PDF Logic ---
     const handleDownloadPdf = () => {
-        const url = `/project/${projectId}/print`;
+        const url = `/project/${projectId}/print${instanceId ? `?instanceId=${instanceId}` : ''}`;
         window.open(url, '_blank', 'noopener,noreferrer');
     };
 

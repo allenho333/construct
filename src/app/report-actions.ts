@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport(smtpConfig);
 // Helper to check if we are using real credentials
 const isRealEmail = process.env.SMTP_HOST && process.env.SMTP_USER;
 
-export async function sendProjectReport(projectId: string, email: string) {
+export async function sendProjectReport(projectId: string, email: string, instanceId?: string) {
     const session = await getSession();
     if (!session || !session.userId) {
         return { error: "Unauthorized" };
@@ -50,14 +50,17 @@ export async function sendProjectReport(projectId: string, email: string) {
     }
 
     // 3. Generate Report (HTML for now)
-    let html = `<h1>Project Report: ${project.name}</h1>`;
+    const reportTitle = instanceId ? `Inspection Report` : `Project Report`;
+    let html = `<h1>${reportTitle}: ${project.name}</h1>`;
     html += `<p><strong>Location:</strong> ${project.location}</p>`;
     html += `<p><strong>Responsible:</strong> ${project.responsible}</p>`;
     html += `<h2>Inspections</h2><ul>`;
 
-    project.inspectionInstances.forEach((inst: any) => {
-        html += `<li><strong>${inst.inspectionType.name}</strong> (${inst.status}) - ${inst.itpNumber || 'No ITP'}</li>`;
-    });
+    project.inspectionInstances
+        .filter((inst: any) => !instanceId || inst.id === instanceId)
+        .forEach((inst: any) => {
+            html += `<li><strong>${inst.inspectionType.name}</strong> (${inst.status}) - ${inst.itpNumber || 'No ITP'}</li>`;
+        });
     html += `</ul>`;
 
     // 4. Send Email
@@ -67,7 +70,7 @@ export async function sendProjectReport(projectId: string, email: string) {
             await transporter.sendMail({
                 from: process.env.SMTP_FROM || '"Construct App" <no-reply@construct.app>',
                 to: email,
-                subject: `Project Report: ${project.name}`,
+                subject: `${reportTitle}: ${project.name}`,
                 html: html,
             });
             return { success: true, message: `Report sent to ${email}` };
@@ -75,7 +78,7 @@ export async function sendProjectReport(projectId: string, email: string) {
             // Mock Mode
             console.log("---------------------------------------------------");
             console.log(`[MOCK EMAIL] Sending report to: ${email}`);
-            console.log(`Subject: Project Report - ${project.name}`);
+            console.log(`Subject: ${reportTitle} - ${project.name}`);
             console.log("Content Preview:", html.substring(0, 100) + "...");
             console.log("---------------------------------------------------");
             return { success: true, message: `Report sent to ${email} (Check server logs for mock output)` };

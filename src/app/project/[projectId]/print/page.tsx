@@ -2,8 +2,15 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import PrintTrigger from "./PrintTrigger";
 
-export default async function ProjectPrintPage({ params }: { params: Promise<{ projectId: string }> }) {
+export default async function ProjectPrintPage({
+    params,
+    searchParams
+}: {
+    params: Promise<{ projectId: string }>;
+    searchParams: Promise<{ instanceId?: string }>;
+}) {
     const { projectId } = await params;
+    const { instanceId } = await searchParams;
 
     const project = await prisma.project.findUnique({
         where: { id: projectId },
@@ -38,7 +45,7 @@ export default async function ProjectPrintPage({ params }: { params: Promise<{ p
                     {/* Placeholder for Logo if needed */}
                 </div>
                 <div className="project-info">
-                    <h2>Project Inspection Report</h2>
+                    <h2>{instanceId ? "Inspection Report" : "Project Inspection Report"}</h2>
                     <p><strong>Project:</strong> {project.name}</p>
                     <p><strong>Location:</strong> {project.location || "N/A"}</p>
                     <p><strong>Date Generated:</strong> {new Date().toLocaleDateString()}</p>
@@ -49,120 +56,122 @@ export default async function ProjectPrintPage({ params }: { params: Promise<{ p
                 <p className="no-data">No inspections recorded for this project.</p>
             ) : (
                 <div className="instances-list">
-                    {project.inspectionInstances.map((inst) => {
-                        const templates = inst.inspectionType.nodeTemplates;
-                        // Separate header node (Room & Item Detail) vs Checklist
-                        const headerTemplate = templates.find(t => t.name === "Room & Item Detail");
-                        const checklistTemplates = templates.filter(t => t.name !== "Room & Item Detail");
+                    {project.inspectionInstances
+                        .filter(inst => !instanceId || inst.id === instanceId)
+                        .map((inst) => {
+                            const templates = inst.inspectionType.nodeTemplates;
+                            // Separate header node (Room & Item Detail) vs Checklist
+                            const headerTemplate = templates.find(t => t.name === "Room & Item Detail");
+                            const checklistTemplates = templates.filter(t => t.name !== "Room & Item Detail");
 
-                        // Get Header Data
-                        let roomCode = "N/A";
-                        let itemCode = "N/A";
-                        if (headerTemplate) {
-                            const result = inst.nodeResults.find(r => r.nodeTemplateId === headerTemplate.id);
-                            if (result?.value) {
-                                try {
-                                    const val = JSON.parse(result.value);
-                                    roomCode = val["Room Code"] || "N/A";
-                                    itemCode = val["Item Code"] || "N/A";
-                                } catch (e) { }
+                            // Get Header Data
+                            let roomCode = "N/A";
+                            let itemCode = "N/A";
+                            if (headerTemplate) {
+                                const result = inst.nodeResults.find(r => r.nodeTemplateId === headerTemplate.id);
+                                if (result?.value) {
+                                    try {
+                                        const val = JSON.parse(result.value);
+                                        roomCode = val["Room Code"] || "N/A";
+                                        itemCode = val["Item Code"] || "N/A";
+                                    } catch (e) { }
+                                }
                             }
-                        }
 
-                        return (
-                            <div key={inst.id} className="inspection-instance">
-                                <div className="instance-header">
-                                    <div className="instance-title">
-                                        <h3>{inst.inspectionType.name}</h3>
-                                        <span className={`status-tag ${inst.status.toLowerCase()}`}>{inst.status}</span>
+                            return (
+                                <div key={inst.id} className="inspection-instance">
+                                    <div className="instance-header">
+                                        <div className="instance-title">
+                                            <h3>{inst.inspectionType.name}</h3>
+                                            <span className={`status-tag ${inst.status.toLowerCase()}`}>{inst.status}</span>
+                                        </div>
+                                        <div className="instance-meta">
+                                            <div><strong>ITP Number:</strong> {inst.itpNumber || "Pending"}</div>
+                                            <div><strong>Room:</strong> {roomCode}</div>
+                                            <div><strong>Item:</strong> {itemCode}</div>
+                                            <div><strong>Date:</strong> {new Date(inst.createdAt).toLocaleDateString()}</div>
+                                        </div>
                                     </div>
-                                    <div className="instance-meta">
-                                        <div><strong>ITP Number:</strong> {inst.itpNumber || "Pending"}</div>
-                                        <div><strong>Room:</strong> {roomCode}</div>
-                                        <div><strong>Item:</strong> {itemCode}</div>
-                                        <div><strong>Date:</strong> {new Date(inst.createdAt).toLocaleDateString()}</div>
-                                    </div>
+
+                                    <table className="checklist-table">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ width: '30%' }}>Checkpoint</th>
+                                                <th style={{ width: '15%' }}>Result</th>
+                                                <th style={{ width: '25%' }}>Details</th>
+                                                <th style={{ width: '30%' }}>Evidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {checklistTemplates.map(node => {
+                                                const result = inst.nodeResults.find(r => r.nodeTemplateId === node.id);
+                                                let values: any = {};
+                                                try {
+                                                    if (result?.value) values = JSON.parse(result.value);
+                                                } catch (e) { }
+
+                                                const status = result?.status || "Pending";
+                                                const validation = values["Validation"];
+                                                const reasons = values["Dissatisfied reason tags"];
+
+                                                // Extract photo URLs (Generic 'photo' type or specific names like 'Photo of window...')
+                                                // We look for any value that is an array of strings (urls) from ImageUploader
+                                                let photos: string[] = [];
+                                                Object.keys(values).forEach(key => {
+                                                    const val = values[key];
+                                                    if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'string' && val[0].startsWith('blob:')) {
+                                                        // Note: Blob URLs won't work in PDF unless we inline them or they are real URLs.
+                                                        // Sincce we are using mockUpload returning blob URLs, this will be broken in real print unless user uploads real images.
+                                                        // For now, we render them. In production, these would be S3 URLs.
+                                                        photos.push(...val);
+                                                    }
+                                                });
+
+                                                return (
+                                                    <tr key={node.id}>
+                                                        <td>
+                                                            <div className="node-name">{node.name}</div>
+                                                            <div className="node-desc">{node.description}</div>
+                                                        </td>
+                                                        <td>
+                                                            <span className={`status-badge ${status.toLowerCase()}`}>
+                                                                {status}
+                                                            </span>
+                                                            {validation && status !== 'Pending' && (
+                                                                <div className="validation-text">{validation}</div>
+                                                            )}
+                                                        </td>
+                                                        <td>
+                                                            {reasons && Array.isArray(reasons) && reasons.length > 0 && (
+                                                                <div className="reasons">
+                                                                    <strong>Issues:</strong>
+                                                                    <ul>
+                                                                        {reasons.map((r: string, i: number) => <li key={i}>{r}</li>)}
+                                                                    </ul>
+                                                                </div>
+                                                            )}
+                                                            {/* Could add comments here if we had a comment field */}
+                                                        </td>
+                                                        <td>
+                                                            {photos.length > 0 ? (
+                                                                <div className="photo-grid">
+                                                                    {photos.map((url, i) => (
+                                                                        <div key={i} className="photo-thumb">
+                                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                            <img src={url} alt="Evidence" />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            ) : <span className="no-evidence">-</span>}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
                                 </div>
-
-                                <table className="checklist-table">
-                                    <thead>
-                                        <tr>
-                                            <th style={{ width: '30%' }}>Checkpoint</th>
-                                            <th style={{ width: '15%' }}>Result</th>
-                                            <th style={{ width: '25%' }}>Details</th>
-                                            <th style={{ width: '30%' }}>Evidence</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {checklistTemplates.map(node => {
-                                            const result = inst.nodeResults.find(r => r.nodeTemplateId === node.id);
-                                            let values: any = {};
-                                            try {
-                                                if (result?.value) values = JSON.parse(result.value);
-                                            } catch (e) { }
-
-                                            const status = result?.status || "Pending";
-                                            const validation = values["Validation"];
-                                            const reasons = values["Dissatisfied reason tags"];
-
-                                            // Extract photo URLs (Generic 'photo' type or specific names like 'Photo of window...')
-                                            // We look for any value that is an array of strings (urls) from ImageUploader
-                                            let photos: string[] = [];
-                                            Object.keys(values).forEach(key => {
-                                                const val = values[key];
-                                                if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'string' && val[0].startsWith('blob:')) {
-                                                    // Note: Blob URLs won't work in PDF unless we inline them or they are real URLs.
-                                                    // Sincce we are using mockUpload returning blob URLs, this will be broken in real print unless user uploads real images.
-                                                    // For now, we render them. In production, these would be S3 URLs.
-                                                    photos.push(...val);
-                                                }
-                                            });
-
-                                            return (
-                                                <tr key={node.id}>
-                                                    <td>
-                                                        <div className="node-name">{node.name}</div>
-                                                        <div className="node-desc">{node.description}</div>
-                                                    </td>
-                                                    <td>
-                                                        <span className={`status-badge ${status.toLowerCase()}`}>
-                                                            {status}
-                                                        </span>
-                                                        {validation && status !== 'Pending' && (
-                                                            <div className="validation-text">{validation}</div>
-                                                        )}
-                                                    </td>
-                                                    <td>
-                                                        {reasons && Array.isArray(reasons) && reasons.length > 0 && (
-                                                            <div className="reasons">
-                                                                <strong>Issues:</strong>
-                                                                <ul>
-                                                                    {reasons.map((r: string, i: number) => <li key={i}>{r}</li>)}
-                                                                </ul>
-                                                            </div>
-                                                        )}
-                                                        {/* Could add comments here if we had a comment field */}
-                                                    </td>
-                                                    <td>
-                                                        {photos.length > 0 ? (
-                                                            <div className="photo-grid">
-                                                                {photos.map((url, i) => (
-                                                                    <div key={i} className="photo-thumb">
-                                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                                        <img src={url} alt="Evidence" />
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        ) : <span className="no-evidence">-</span>}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
                 </div>
             )}
 

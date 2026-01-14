@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import ThemeToggle from "@/components/ThemeToggle";
 import LogoutButton from "@/components/LogoutButton";
+import ReportActions from "@/components/ReportActions";
 
 import CreateProjectButton from "@/components/CreateProjectButton";
 
@@ -33,17 +34,20 @@ export default async function Home() {
           ) : (
             <ul style={{ listStyle: "none", padding: 0 }}>
               {projects.map((project) => (
-                <li key={project.id} style={{ margin: "1rem 0", padding: "1rem", border: "1px solid var(--adm-color-border)", borderRadius: "8px", background: 'var(--adm-color-box)' }}>
-                  <Link href={`/project/${project.id}`}>
-                    <h3 style={{ marginBottom: "0.5rem" }}>
+                <li key={project.id} style={{ margin: "1rem 0", padding: "1rem", border: "1px solid var(--adm-color-border)", borderRadius: "8px", background: 'var(--adm-color-box)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Link href={`/project/${project.id}`} style={{ flex: 1, textDecoration: 'none' }}>
+                    <div style={{ marginBottom: "0.5rem", fontSize: '1.17em', fontWeight: 'bold', color: 'var(--adm-color-text)' }}>
                       {project.code && <span style={{ opacity: 0.7, marginRight: '8px' }}>{project.code}</span>}
                       {project.name}
-                    </h3>
-                    <p style={{ color: "var(--adm-color-text-secondary)", opacity: 0.8 }}>{project.location}</p>
-                    <p style={{ fontSize: "0.8rem", marginTop: "0.5rem", color: "var(--adm-color-text-secondary)" }}>
-                      Responsbile: {project.responsible}
+                    </div>
+                    <p style={{ margin: 0, color: "var(--adm-color-text-secondary)", opacity: 0.8 }}>{project.location}</p>
+                    <p style={{ margin: 0, fontSize: "0.8rem", marginTop: "0.5rem", color: "var(--adm-color-text-secondary)" }}>
+                      Responsible: {project.responsible}
                     </p>
                   </Link>
+                  <div style={{ marginLeft: '1rem' }}>
+                    <ReportActions projectId={project.id} />
+                  </div>
                 </li>
               ))}
             </ul>
