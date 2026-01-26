@@ -30,7 +30,6 @@ export default async function ProjectLayout({
         <ProjectShell
             projectName={project.name}
             projectId={project.id}
-            instances={project.inspectionInstances}
             inspectionTypes={project.inspectionTypes}
         >
             {children}

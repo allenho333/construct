@@ -37,8 +37,8 @@ export async function createInspection(projectId: string, inspectionTypeId: stri
     // The current form implementation handles missing results by showing "Pending".
     // So we can skip pre-populating NodeResults for now.
 
-    revalidatePath(`/project/${projectId}`);
-    redirect(`/project/${projectId}/${newInstance.id}`);
+    revalidatePath(`/project/${projectId}/inspection`);
+    redirect(`/project/${projectId}/inspection/${newInstance.id}`);
 }
 
 export async function deleteInspection(instanceId: string, projectId: string) {
@@ -53,5 +53,5 @@ export async function deleteInspection(instanceId: string, projectId: string) {
     });
 
     // 3. Revalidate
-    revalidatePath(`/project/${projectId}`);
+    revalidatePath(`/project/${projectId}/inspection`);
 }

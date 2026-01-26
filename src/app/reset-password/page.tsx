@@ -1,25 +1,24 @@
 "use client";
 
 import React, { useActionState, startTransition } from "react";
-import { Form, Input, Button, Card } from "antd-mobile";
-import { register } from "@/app/auth-actions";
+import { Form, Input, Button } from "antd-mobile";
+import { resetPassword } from "@/app/auth-actions";
 import Link from "next/link";
-import styles from "./register.module.css";
+import styles from "./reset-password.module.css";
 
-export default function RegisterPage() {
-    const [state, formAction, isPending] = useActionState(register, null);
+export default function ResetPasswordPage() {
+    const [state, formAction, isPending] = useActionState(resetPassword, null);
 
     return (
         <div className={styles.container}>
-            <div className={styles.navHeader}>
-                <Link href="/login" className={styles.backButton}>
-                    &lt; Back
-                </Link>
+            <div className={styles.logoContainer}>
                 <img src="/logo.png" alt="Constructoo" className={styles.logo} />
             </div>
 
-            <h1 className={styles.title}>Sign up</h1>
-            <p className={styles.subtitle}>Please create a new account</p>
+            <h1 className={styles.title}>Reset Password</h1>
+            <p className={styles.subtitle}>
+                Remember your password? <Link href="/login" className={styles.link}>Sign in</Link>
+            </p>
 
             {state?.error && (
                 <div className={styles.errorMessage}>
@@ -31,9 +30,10 @@ export default function RegisterPage() {
                 layout="vertical"
                 onFinish={(values) => {
                     const formData = new FormData();
-                    formData.append("phoneNumber", values.phoneNumber); // Phone Number
+                    formData.append("phoneNumber", values.phoneNumber);
                     formData.append("email", values.email);
                     formData.append("password", values.password);
+                    formData.append("confirmPassword", values.confirmPassword);
                     startTransition(() => {
                         formAction(formData);
                     });
@@ -44,10 +44,10 @@ export default function RegisterPage() {
                     <Form.Item
                         name="phoneNumber"
                         noStyle
-                        rules={[{ required: true, message: "Phone number is required" }]}
+                        rules={[{ required: true, message: "Required" }]}
                     >
                         <div className={styles.inputWrapper}>
-                            <Input placeholder="Type Phone Number here..." />
+                            <Input placeholder="0434725663" clearable />
                         </div>
                     </Form.Item>
                 </div>
@@ -57,26 +57,36 @@ export default function RegisterPage() {
                     <Form.Item
                         name="email"
                         noStyle
-                    // Email is optional in schema? Plan said yes. But typically email is nice to have. 
-                    // I will make it optional or required based on 'Please fill in all required fields' in backend? 
-                    // Backend says: if (!username || !password) ... so email is optional in backend check.
-                    // I'll leave it optional or just basic format check.
+                        rules={[{ required: true, message: "Required", type: 'email' }]}
                     >
                         <div className={styles.inputWrapper}>
-                            <Input placeholder="myemail@gmail.com" type="email" />
+                            <Input placeholder="name@example.com" clearable />
                         </div>
                     </Form.Item>
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Password</label>
+                    <label className={styles.formLabel}>New Password</label>
                     <Form.Item
                         name="password"
                         noStyle
-                        rules={[{ required: true, message: "Password is required" }]}
+                        rules={[{ required: true, message: "Required" }]}
                     >
                         <div className={styles.inputWrapper}>
-                            <Input placeholder="•••••••••" type="password" clearable onClear={() => { }} />
+                            <Input placeholder="•••••••••" type="password" clearable />
+                        </div>
+                    </Form.Item>
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Confirm Password</label>
+                    <Form.Item
+                        name="confirmPassword"
+                        noStyle
+                        rules={[{ required: true, message: "Required" }]}
+                    >
+                        <div className={styles.inputWrapper}>
+                            <Input placeholder="•••••••••" type="password" clearable />
                         </div>
                     </Form.Item>
                 </div>
@@ -84,10 +94,11 @@ export default function RegisterPage() {
                 <Button
                     block
                     type="submit"
+                    color="primary"
                     className={styles.submitButton}
                     loading={isPending}
                 >
-                    Sign up
+                    Reset Password
                 </Button>
             </Form>
         </div>

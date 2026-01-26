@@ -1,0 +1,132 @@
+/* Project Page Styles */
+
+.container {
+    padding: 16px;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.headerTitle {
+    font-size: 32px;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.subHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 12px;
+    margin-bottom: 24px;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+.exportButton {
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+/* Inspection Card */
+.inspectionList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.card {
+    background-color: #f9fafb;
+    /* Light gray background like screenshot */
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+}
+
+.cardContent {
+    flex: 1;
+}
+
+.cardTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 8px 0;
+}
+
+.cardDetail {
+    font-size: 14px;
+    color: #666;
+    margin: 2px 0;
+}
+
+.cardActions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.actionIcon {
+    color: #fb5c2c;
+    /* Orange */
+    width: 20px;
+    height: 20px;
+}
+
+.deleteIcon {
+    color: #9ca3af;
+    width: 20px;
+    height: 20px;
+}
+
+/* Floating/Fixed Bottom Button */
+.createButtonContainer {
+    margin-top: auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 10;
+    border-top: 1px solid #f0f0f0;
+}
+
+.createButton {
+    width: 100%;
+    background-color: #fb5c2c;
+    /* Orange from design */
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    height: 52px;
+    border-radius: 12px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
