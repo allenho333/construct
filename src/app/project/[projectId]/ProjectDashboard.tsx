@@ -81,8 +81,15 @@ export default function ProjectDashboard({ project, inspections, types }: any) {
 
             <ActionSheet
                 visible={actionSheetVisible}
-                actions={actions}
+                actions={actions.length > 0 ? actions : [
+                    {
+                        text: 'No inspection types available',
+                        key: 'empty',
+                        disabled: true
+                    }
+                ]}
                 onClose={() => setActionSheetVisible(false)}
+                extra={actions.length === 0 ? 'Please contact admin to set up inspection types for this project.' : undefined}
             />
 
             <Modal
