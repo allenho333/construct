@@ -138,14 +138,17 @@ const ChecklistCard = ({ node, result, instanceId }: {
     }, [values, calculatedStatus, instanceId, node.id, node.name]);
 
 
-    // Mock upload
-    const mockUpload = async (file: File): Promise<ImageUploadItem> => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
+    // Convert file to Base64 for persistence (simple solution)
+    const uploadImage = async (file: File): Promise<ImageUploadItem> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
                 resolve({
-                    url: URL.createObjectURL(file), // Mock URL
+                    url: reader.result as string,
                 });
-            }, 1000);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
         });
     };
 
@@ -169,7 +172,7 @@ const ChecklistCard = ({ node, result, instanceId }: {
                         <div key={idx} style={{ background: '#f9f9f9', padding: 10, borderRadius: 8, textAlign: 'center' }}>
                             <div style={{ marginBottom: 8 }}>
                                 <ImageUploader
-                                    upload={mockUpload}
+                                    upload={uploadImage}
                                     maxCount={1}
                                     value={values[field.name] || []}
                                     onChange={(v) => handleChange(field.name, v)}
