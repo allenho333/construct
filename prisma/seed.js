@@ -8,32 +8,45 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('Seeding database...');
 
-    // 0. Create Admin User
-    const hashedPassword = await bcrypt.hash("admin", 10);
-    const adminUser = await prisma.user.upsert({
-        where: { username: "admin" },
-        update: {},
-        create: {
-            username: "admin",
-            password: hashedPassword
+    // 0. Clean and Seed Default User
+    console.log('Cleaning User table...');
+    // await prisma.user.deleteMany({}); // Cleaning is done by migrate reset usually, or we can keep it. 
+
+    // Commenting out default user for manual registration testing
+    /*
+    const hashedPassword = await bcrypt.hash("0000", 10);
+    const defaultUser = await prisma.user.create({
+        data: {
+            phoneNumber: "02885219440",
+            password: hashedPassword,
+            email: "admin@constructoo.com" // Optional default
         }
     });
-    console.log(`Admin user seeded: ${adminUser.username}`);
+    console.log(`Default user seeded: ${defaultUser.phoneNumber}`);
+    */
 
 
     // 1. Create Default Project
-    const project = await prisma.project.upsert({
-        where: { id: 'default-project' }, // Using a fixed UUID for simplicity in seed or we can query by name
-        update: {},
-        create: {
-            id: 'default-project',
+    // Clean projects first to ensure fresh seed with new ID
+    // MUST delete in correct order due to foreign key constraints
+    console.log('Cleaning existing data...');
+    await prisma.inspectionNodeResult.deleteMany({});
+    await prisma.inspectionInstance.deleteMany({});
+    await prisma.inspectionNodeTemplate.deleteMany({});
+    await prisma.inspectionType.deleteMany({});
+    await prisma.project.deleteMany({});
+
+
+    const project = await prisma.project.create({
+        data: {
+            // id: auto-generated UUID
             name: '012- Norrebro Waston Block C',
             location: '46 Aspinall St, Watson ACT 2602',
             assignees: 'Jeff Pitz',
             responsible: 'Charles Chen'
         }
     });
-    console.log(`Project seeded: ${project.name}`);
+    console.log(`Project seeded: ${project.name} (${project.id})`);
 
     // 2. Sync Forms from JSON Directory
     const formsDir = path.join(__dirname, '../src/config/forms');
@@ -46,11 +59,9 @@ async function main() {
 
     const formFiles = fs.readdirSync(formsDir).filter(file => file.endsWith('.json'));
 
-    // Clear existing types to avoid duplicates during dev
-    await prisma.inspectionNodeResult.deleteMany({});
-    await prisma.inspectionInstance.deleteMany({});
-    await prisma.inspectionNodeTemplate.deleteMany({});
-    await prisma.inspectionType.deleteMany({});
+
+    // Clear existing types done above
+
 
     for (const file of formFiles) {
         const filePath = path.join(formsDir, file);

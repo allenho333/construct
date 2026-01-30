@@ -40,7 +40,7 @@ export default async function InstancePage({
             <div style={{ marginBottom: "2rem" }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "0.5rem" }}>
                     <h1 style={{ margin: 0 }}>{instance.inspectionType.name}</h1>
-                    <ReportActions projectId={projectId} instanceId={instanceId} />
+                    {/* <ReportActions projectId={projectId} instanceId={instanceId} /> */}
                 </div>
 
                 {/* Header is now handled inside InspectionForm */}

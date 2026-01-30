@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
-import { Form, Input, Selector, ImageUploader, Button, Card, Tag, Space } from 'antd-mobile';
+import { Form, Input, Selector, ImageUploader, Button } from 'antd-mobile';
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader';
-import { CheckCircleFill, CloseCircleFill } from 'antd-mobile-icons';
+import { CheckCircleFill, CloseCircleFill, MinusOutline, DownOutline } from 'antd-mobile-icons';
 import { submitInspection, saveNodeResult } from "@/app/inspection-actions";
 
 type NodeTemplate = {
@@ -73,7 +73,6 @@ const ChecklistCard = ({ node, result, instanceId }: {
             try {
                 const parsed = JSON.parse(result.value);
                 setValues(prev => {
-                    // Only update if different to avoid loop/resetting WIP
                     if (JSON.stringify(prev) !== JSON.stringify(parsed)) {
                         return parsed;
                     }
@@ -83,31 +82,30 @@ const ChecklistCard = ({ node, result, instanceId }: {
         }
     }, [result?.value]);
 
-    // Validated status calculated from local values (optimistic)
-    // Or from saved result if values match (not really worth checking match, just recalc)
-    // Actually, we should recalculate "isCompleted" based on current values.
+    /* Parsing Description for Instruction and Tip */
+    const { instruction, tip } = React.useMemo(() => {
+        if (!node.description) return { instruction: null, tip: null };
+        const parts = node.description.split("Tip:");
+        return {
+            instruction: parts[0]?.trim(),
+            tip: parts[1]?.trim()
+        };
+    }, [node.description]);
 
-    // Determine Status
+    // Derived Status
     const isCompleted = React.useMemo(() => {
-        if (fields.length === 0) return !!values["Value"]; // fallback for single input
-
-        // 1. Validation is mandatory
+        if (fields.length === 0) return !!values["Value"];
         const validation = values["Validation"];
         if (!validation) return false;
-
-        // 2. Check Photo (Required)
         const hasPhotoField = fields.some(f => f.inputType === 'photo');
         if (hasPhotoField) {
             const photoVal = values[fields.find(f => f.inputType === 'photo')?.name || ""];
             if (!photoVal || (Array.isArray(photoVal) && photoVal.length === 0)) return false;
         }
-
-        // 3. Conditional: Dissatisfied reasons
         if (validation === "Dissatisfied") {
             const reasons = values["Dissatisfied reason tags"];
             if (!reasons || (Array.isArray(reasons) && reasons.length === 0)) return false;
         }
-
         return true;
     }, [values, fields]);
 
@@ -115,7 +113,6 @@ const ChecklistCard = ({ node, result, instanceId }: {
         if (!isCompleted) return "Pending";
         if (values["Validation"] === "Satisfied") return "Pass";
         if (values["Validation"] === "Dissatisfied") return "Fail";
-        // Default to Completed if valid but no specific validation field (unlikely with this template)
         return "Completed";
     }, [isCompleted, values]);
 
@@ -130,7 +127,6 @@ const ChecklistCard = ({ node, result, instanceId }: {
         if (saveTimeout.current) clearTimeout(saveTimeout.current);
 
         saveTimeout.current = setTimeout(async () => {
-            // Save
             console.log(`Saving node ${node.name}...`, values);
             await saveNodeResult(instanceId, node.id, values, calculatedStatus);
             lastSavedValues.current = currentValuesStr;
@@ -142,7 +138,7 @@ const ChecklistCard = ({ node, result, instanceId }: {
     }, [values, calculatedStatus, instanceId, node.id, node.name]);
 
 
-    // Mock upload function (hoisted for reuse)
+    // Mock upload
     const mockUpload = async (file: File): Promise<ImageUploadItem> => {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -153,80 +149,116 @@ const ChecklistCard = ({ node, result, instanceId }: {
         });
     };
 
-    const renderInput = (type: string, optionsStr: string | null | any[], label: string) => {
-        let options: string[] = [];
-        if (Array.isArray(optionsStr)) {
-            if (typeof optionsStr[0] === 'string') options = optionsStr as string[];
-        } else if (typeof optionsStr === 'string') {
-            try { options = JSON.parse(optionsStr); } catch (e) { options = []; }
+    // Helper to update values
+    const handleChange = (key: string, val: any) => {
+        setValues(prev => ({ ...prev, [key]: val }));
+    };
+
+    // Render Logic Breakdown
+    const photoFields = fields.filter(f => f.inputType === 'photo');
+    const tagField = fields.find(f => f.name === 'Dissatisfied reason tags');
+    const validationField = fields.find(f => f.name === 'Validation');
+
+    const renderPhotos = () => {
+        if (photoFields.length === 0) return null;
+        return (
+            <div style={{ marginTop: 20 }}>
+                <h4 style={{ color: '#003366', fontSize: '1rem', fontWeight: 700, margin: '0 0 10px 0' }}>Photos</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    {photoFields.map((field, idx) => (
+                        <div key={idx} style={{ background: '#f9f9f9', padding: 10, borderRadius: 8, textAlign: 'center' }}>
+                            <div style={{ marginBottom: 8 }}>
+                                <ImageUploader
+                                    upload={mockUpload}
+                                    maxCount={1}
+                                    value={values[field.name] || []}
+                                    onChange={(v) => handleChange(field.name, v)}
+                                    style={{ '--cell-size': '80px' }}
+                                />
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: '#666', lineHeight: 1.2 }}>{field.description || field.name}</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    const renderTags = () => {
+        if (!tagField) return null;
+        const options = tagField.options || [];
+        const currentVal = values[tagField.name] || [];
+
+        return (
+            <div style={{ marginTop: 20 }}>
+                <h4 style={{ color: '#003366', fontSize: '1rem', fontWeight: 700, margin: '0 0 10px 0' }}>Dissatisfied Tags</h4>
+                <Selector
+                    options={options.map((opt: string) => ({ label: opt, value: opt }))}
+                    multiple
+                    value={currentVal}
+                    onChange={(v) => handleChange(tagField.name, v)}
+                    style={{
+                        '--border-radius': '100px',
+                        '--checked-color': '#e6f7ff',
+                        '--checked-text-color': '#003366',
+                        '--checked-border': '1px solid #003366',
+                        '--padding': '6px 12px'
+                    }}
+                />
+            </div>
+        );
+    };
+
+    const renderValidation = () => {
+        if (!validationField) return null;
+        const currentVal = values[validationField.name];
+
+        return (
+            <div style={{ marginTop: 20 }}>
+                <h4 style={{ color: '#003366', fontSize: '1rem', fontWeight: 700, margin: '0 0 10px 0' }}>Validation</h4>
+                <div style={{ display: 'flex', gap: 12 }}>
+                    {['Satisfied', 'Dissatisfied'].map((opt) => {
+                        const isSelected = currentVal === opt;
+                        const isSatisfied = opt === 'Satisfied';
+                        return (
+                            <div
+                                key={opt}
+                                onClick={() => handleChange(validationField.name, opt)}
+                                style={{
+                                    flex: 1,
+                                    padding: '12px',
+                                    borderRadius: 8,
+                                    textAlign: 'center',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    background: isSelected ? '#fb5c2c' : '#f5f5f5',
+                                    color: isSelected ? '#fff' : '#666',
+                                    transition: 'all 0.2s',
+                                    border: isSelected ? 'none' : '1px solid #eee'
+                                }}
+                            >
+                                {opt}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
+    // Status Icon
+    const getStatusIcon = () => {
+        if (calculatedStatus === 'Pass' || calculatedStatus === 'Completed') {
+            return <CheckCircleFill style={{ fontSize: '24px', color: '#52c41a' }} />;
         }
-
-        // Common onChange handler
-        const handleChange = (val: any) => {
-            setValues(prev => ({ ...prev, [label]: val }));
-        };
-        const value = values[label];
-
-        if (type === 'text') {
-            return (
-                <Form.Item label={label}>
-                    <Input
-                        placeholder="Enter value"
-                        value={value}
-                        onChange={handleChange}
-                    />
-                </Form.Item>
-            );
+        if (calculatedStatus === 'Fail') {
+            return <CloseCircleFill style={{ fontSize: '24px', color: '#ff4d4f' }} />;
         }
-
-        if (type === 'select' || type === 'multi_select') {
-            // ... logic same ...
-            // We need to handle selector value carefully
-            const selValue = value ? (Array.isArray(value) ? value : [value]) : [];
-            return (
-                <Form.Item label={label}>
-                    <Selector
-                        options={options.map(opt => ({ label: opt, value: opt }))}
-                        columns={2}
-                        multiple={type === 'multi_select'}
-                        value={selValue}
-                        onChange={(v) => handleChange(type === 'multi_select' ? v : v[0])}
-                    />
-                </Form.Item>
-            );
-        }
-
-        if (type === 'yes_no') {
-            return (
-                <Form.Item label={label}>
-                    <Selector
-                        options={[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]}
-                        columns={2}
-                        value={value ? [value] : []}
-                        onChange={(v) => handleChange(v[0])}
-                    />
-                </Form.Item>
-            );
-        }
-
-        if (type === 'photo') {
-            return (
-                <Form.Item label={label}>
-                    <ImageUploader
-                        upload={mockUpload}
-                        maxCount={3}
-                        value={value || []}
-                        onChange={handleChange}
-                    />
-                </Form.Item>
-            );
-        }
-
-        return null;
+        return <MinusOutline style={{ fontSize: '24px', color: '#d9d9d9' }} />;
     };
 
     return (
-        <Card style={{ marginBottom: 12, borderRadius: 8 }}>
+        <div style={{ borderBottom: '1px solid #f0f0f0', padding: '16px 0' }}>
             <div
                 onClick={() => setIsOpen(!isOpen)}
                 style={{
@@ -236,40 +268,76 @@ const ChecklistCard = ({ node, result, instanceId }: {
                     cursor: 'pointer'
                 }}
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{node.name}</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>{node.name}</h3>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {/* Show status derived from local state if open/editing, or fallback to result */}
-                    {calculatedStatus === 'Completed' && <Tag color='success'>Completed</Tag>}
-                    {calculatedStatus === 'Pass' && <Tag color='success'>Pass</Tag>}
-                    {calculatedStatus === 'Fail' && <Tag color='danger'>Fail</Tag>}
-                    {calculatedStatus === 'Pending' && <Tag color='default'>Pending</Tag>}
-                    <span style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s', fontSize: '1.2rem', color: '#999' }}>
-                        ▼
-                    </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {getStatusIcon()}
+                    <div style={{
+                        background: '#f0f0f0',
+                        borderRadius: '50%',
+                        width: '24px',
+                        height: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s'
+                    }}>
+                        <DownOutline fontSize={12} color="#666" />
+                    </div>
                 </div>
             </div>
 
             {isOpen && (
-                <div style={{ marginTop: 16, borderTop: '1px solid #f0f0f0', paddingTop: 16 }}>
-                    <p style={{ color: '#666', marginTop: 0, marginBottom: 16 }}>{node.description}</p>
-                    <div className="input-area">
-                        <Form layout='vertical'>
-                            {node.inputType === 'form_group' ? (
-                                fields.map((field, idx) => (
-                                    <React.Fragment key={idx}>
-                                        {renderInput(field.inputType, field.options, field.name)}
-                                    </React.Fragment>
-                                ))
-                            ) : (
-                                renderInput(node.inputType, node.options, "Value")
-                            )}
-                        </Form>
-                    </div>
+                <div style={{ marginTop: 16 }}>
+                    {/* Instruction */}
+                    {instruction && (
+                        <div style={{ marginBottom: 12, display: 'flex', alignItems: 'flex-start' }}>
+                            <span style={{
+                                background: '#ffeeeb',
+                                color: '#fb5c2c',
+                                padding: '2px 8px',
+                                borderRadius: 4,
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                marginRight: 8,
+                                flexShrink: 0,
+                                marginTop: 2
+                            }}>
+                                Instruction
+                            </span>
+                            <span style={{ fontSize: '0.9rem', color: '#333' }}>{instruction}</span>
+                        </div>
+                    )}
+
+                    {/* Tip */}
+                    {tip && (
+                        <div style={{ marginBottom: 12, display: 'flex', alignItems: 'flex-start' }}>
+                            <span style={{
+                                background: '#e6f7ff',
+                                color: '#1890ff',
+                                padding: '2px 8px',
+                                borderRadius: 4,
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                marginRight: 8,
+                                flexShrink: 0,
+                                marginTop: 2
+                            }}>
+                                Tips
+                            </span>
+                            <span style={{ fontSize: '0.9rem', color: '#666' }}>{tip}</span>
+                        </div>
+                    )}
+
+                    {renderPhotos()}
+                    {renderTags()}
+                    {renderValidation()}
+
                 </div>
             )}
-        </Card>
+        </div>
     );
 };
 
@@ -279,17 +347,6 @@ export default function InspectionForm({ nodes, initialResults = [], headerMetad
 
     // Create map for easy lookup
     const resultMap = new Map(initialResults.map(r => [r.nodeTemplateId, r]));
-
-    // Mock upload function
-    const mockUpload = async (file: File): Promise<ImageUploadItem> => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    url: URL.createObjectURL(file), // Mock URL
-                });
-            }, 1000);
-        });
-    };
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -306,8 +363,6 @@ export default function InspectionForm({ nodes, initialResults = [], headerMetad
             setSubmitting(false);
         }
     };
-
-
 
     // Separate Header Node from Checklist Nodes
     const headerNode = nodes.find(n => n.name === "Room & Item Detail");
@@ -348,27 +403,33 @@ export default function InspectionForm({ nodes, initialResults = [], headerMetad
     // -------------------------------
 
     return (
-        <div style={{ padding: '12px', background: 'var(--adm-color-background)', minHeight: '100%' }}>
-            {/* Header Card */}
-            <div style={{ padding: "16px", background: "var(--adm-color-box)", borderRadius: "8px", marginBottom: "16px" }}>
-                <h2 style={{ fontSize: '1.2rem', marginTop: 0, marginBottom: '0.5rem' }}>
-                    {headerMetadata?.itpNumber ? `ITP #${headerMetadata.itpNumber}` : "Pending Submission..."}
-                </h2>
+        <div style={{ padding: '0px', background: 'var(--adm-color-background)', minHeight: '100%' }}>
 
-                {/* Custom Grid Layout for Header Fields */}
+            {/* Subject Information Card */}
+            <div style={{
+                padding: "16px",
+                background: "#f5f5f5", // Light Gray Background
+                borderRadius: "12px",
+                marginBottom: "24px"
+            }}>
+                <h2 style={{ fontSize: '1rem', fontWeight: 700, marginTop: 0, marginBottom: '12px', color: '#111' }}>
+                    Subject Information
+                </h2>
                 {renderHeaderFields()}
             </div>
 
             {/* Checklist Section */}
-            <h3 style={{ margin: "0 0 1rem 0", fontSize: "1.1rem", color: 'var(--adm-color-text-secondary)' }}>Checklist</h3>
-            {checklistNodes.map(node => (
-                <ChecklistCard
-                    key={node.id}
-                    node={node}
-                    result={resultMap.get(node.id)}
-                    instanceId={instanceId}
-                />
-            ))}
+            <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.25rem", color: '#fb5c2c', fontWeight: 700 }}>ITP Checklist</h3>
+            <div style={{ marginBottom: "2rem" }}>
+                {checklistNodes.map(node => (
+                    <ChecklistCard
+                        key={node.id}
+                        node={node}
+                        result={resultMap.get(node.id)}
+                        instanceId={instanceId}
+                    />
+                ))}
+            </div>
 
             {!isSubmitted && (
                 <div style={{ marginTop: "2rem", paddingBottom: "3rem" }}>
@@ -378,9 +439,16 @@ export default function InspectionForm({ nodes, initialResults = [], headerMetad
                         size="large"
                         onClick={handleSubmit}
                         loading={submitting}
-                        style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                        style={{
+                            background: '#fb5c2c',
+                            border: 'none',
+                            borderRadius: '12px',
+                            fontWeight: 700,
+                            fontSize: '18px',
+                            height: '52px'
+                        }}
                     >
-                        Submit Inspection
+                        Submit TIP
                     </Button>
                 </div>
             )}
@@ -403,12 +471,16 @@ export default function InspectionForm({ nodes, initialResults = [], headerMetad
             if (!field) return null;
             const val = headerValues[field.name];
             return (
-                <div style={{ background: "var(--adm-color-background)", borderRadius: 8, padding: "8px 12px", border: "1px solid var(--adm-color-border)" }}>
-                    <div style={{ fontSize: "0.75rem", color: "var(--adm-color-text-secondary)", marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                <div style={{
+                    background: "#fff", // White input background
+                    borderRadius: 8,
+                    padding: "8px 12px",
+                }}>
+                    <div style={{ fontSize: "0.75rem", color: "#999", marginBottom: 4 }}>
                         {field.name}
                     </div>
                     <Input
-                        style={{ '--font-size': '1rem', '--color': 'var(--adm-color-text)' }}
+                        style={{ '--font-size': '1rem' }}
                         placeholder={placeholder}
                         value={val || ""}
                         onChange={(v) => setHeaderValues(prev => ({ ...prev, [field.name]: v }))}
@@ -418,12 +490,12 @@ export default function InspectionForm({ nodes, initialResults = [], headerMetad
         };
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    {renderMetadataInput(roomField, "e.g. 101")}
-                    {renderMetadataInput(itemField, "e.g. W-01")}
+                    {renderMetadataInput(roomField, "e.g. Bed 1")}
+                    {renderMetadataInput(itemField, "e.g. W-08")}
                 </div>
-                {renderMetadataInput(noticeField, "Any special notes...")}
+                {renderMetadataInput(noticeField, "e.g. AS2421 Sliding Door")}
             </div>
         );
     }

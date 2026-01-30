@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE "Project" (
     "id" TEXT NOT NULL,
+    "code" TEXT,
     "name" TEXT NOT NULL,
     "location" TEXT,
     "assignees" TEXT,
@@ -61,6 +62,20 @@ CREATE TABLE "InspectionNodeResult" (
 
     CONSTRAINT "InspectionNodeResult_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "phoneNumber" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "email" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_phoneNumber_key" ON "User"("phoneNumber");
 
 -- AddForeignKey
 ALTER TABLE "InspectionType" ADD CONSTRAINT "InspectionType_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -76,9 +76,9 @@ model InspectionNodeResult {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  password  String   // Hashed
-  email     String?  // Saved email for reports
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  phoneNumber String   @unique
+  password    String   // Hashed
+  email       String?  // Saved email for reports
+  createdAt   DateTime @default(now())
 }
