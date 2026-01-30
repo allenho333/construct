@@ -27,9 +27,15 @@ async function main() {
 
 
     // 1. Create Default Project
-    // 1. Create Default Project
     // Clean projects first to ensure fresh seed with new ID
+    // MUST delete in correct order due to foreign key constraints
+    console.log('Cleaning existing data...');
+    await prisma.inspectionNodeResult.deleteMany({});
+    await prisma.inspectionInstance.deleteMany({});
+    await prisma.inspectionNodeTemplate.deleteMany({});
+    await prisma.inspectionType.deleteMany({});
     await prisma.project.deleteMany({});
+
 
     const project = await prisma.project.create({
         data: {
@@ -53,11 +59,9 @@ async function main() {
 
     const formFiles = fs.readdirSync(formsDir).filter(file => file.endsWith('.json'));
 
-    // Clear existing types to avoid duplicates during dev
-    await prisma.inspectionNodeResult.deleteMany({});
-    await prisma.inspectionInstance.deleteMany({});
-    await prisma.inspectionNodeTemplate.deleteMany({});
-    await prisma.inspectionType.deleteMany({});
+
+    // Clear existing types done above
+
 
     for (const file of formFiles) {
         const filePath = path.join(formsDir, file);
