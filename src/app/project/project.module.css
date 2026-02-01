@@ -107,7 +107,7 @@
 .createButtonContainer {
     margin-top: auto;
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
     position: sticky;
     bottom: 0;
     background-color: #fff;

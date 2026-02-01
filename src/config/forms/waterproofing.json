@@ -1,11 +1,11 @@
 [
     {
-        "sectionCode": "WIN-01",
-        "name": "Window Installation Checklist",
+        "sectionCode": "WA-01",
+        "name": "Wet Area Waterproofing Checklist",
         "nodes": [
             {
                 "name": "Room & Item Detail",
-                "description": "Enter room and window identification details.",
+                "description": "Enter room and item identification details.",
                 "inputType": "form_group",
                 "orderIndex": 0,
                 "options": [
@@ -16,25 +16,30 @@
                     },
                     {
                         "name": "Item Code",
-                        "description": "(Fill, e.g. Window code)",
+                        "description": "(Fill)",
                         "inputType": "text"
                     },
                     {
                         "name": "Notice",
-                        "description": "",
+                        "description": "Perform this check AFTER waterproofing is dry, but BEFORE tiling starts.",
                         "inputType": "text"
                     }
                 ]
             },
             {
-                "name": "Pre-Installation Check (Opening Readiness)",
-                "description": "Ensure the wall opening is clean, flat, and ready for installation. Tip: Take a wide-angle photo showing the entire opening area.",
+                "name": "Membrane Coverage Overview (Walls & Floor)",
+                "description": "Check if the waterproofing membrane (a rubbery paint) covers the entire floor and required wall areas. The coating should look thick and consistent, not see-through. Tip: Take a wide-angle photo from the doorway showing the whole floor and walls.",
                 "inputType": "form_group",
                 "orderIndex": 1,
                 "options": [
                     {
-                        "name": "Photo of window opening",
-                        "description": "Photo of window opening (full view)",
+                        "name": "Photo of entire bathroom floor (Wide shot)",
+                        "description": "Photo of entire bathroom floor (Wide shot)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Photo of shower walls (Wide shot)",
+                        "description": "Photo of shower walls (Wide shot)",
                         "inputType": "photo"
                     },
                     {
@@ -42,9 +47,9 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Incorrect dimensions",
-                            "Damaged or dirty opening",
-                            "Uneven or unaligned surface"
+                            "No membrane applied",
+                            "Coating too thin/transparent",
+                            "Missed spots on floor or junction"
                         ]
                     },
                     {
@@ -60,14 +65,14 @@
                 ]
             },
             {
-                "name": "Installation & Visual Alignment",
-                "description": "Confirm the window is visually aligned and check the glass condition for any defects. Tip: Take photos of the full frame from both inside and outside, plus a close-up of the glass.",
+                "name": "Shower Zone Height Check",
+                "description": "Verify the waterproofing on the shower walls goes high enough. It should typically reach a height of at least 1.8m (approx. 6ft) or up to the ceiling rose. Tip: Stand in the shower area and check if the \"paint\" goes up above your head level.",
                 "inputType": "form_group",
                 "orderIndex": 2,
                 "options": [
                     {
-                        "name": "Inside photo of window (full view)",
-                        "description": "Inside photo of window (full view)",
+                        "name": "Photo of the top edge of waterproofing in shower recess",
+                        "description": "Photo of the top edge of waterproofing in shower recess",
                         "inputType": "photo"
                     },
                     {
@@ -75,9 +80,10 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Cracked or scratched glass",
-                            "Frame misaligned",
-                            "Visible damage to frame"
+                            "Too low (under 1.8m)",
+                            "Uneven top edge",
+                            "Only floor is waterproofed",
+                            "Coating too thin/transparent"
                         ]
                     },
                     {
@@ -93,14 +99,19 @@
                 ]
             },
             {
-                "name": "Gaps & Seals Inspection",
-                "description": "Check for any visible large gaps or daylight showing between the window frame and the wall. Tip: Capture full view photo of all four edges (top, bottom, left, right) from the interior to verify the fit.",
+                "name": "Corners & Bond Breaker Check",
+                "description": "Inspect the bottom corners where the wall meets the floor, and the vertical corners inside the shower. These areas should look reinforced with a tape or thick sealant (Bond Breaker) under the membrane, not just simple paint. Tip: The corner should look \"curved\" or \"taped\", not a sharp 90-degree crack. This prevents the membrane from tearing when the house moves.",
                 "inputType": "form_group",
                 "orderIndex": 3,
                 "options": [
                     {
-                        "name": "Inside photo of window (full view)",
-                        "description": "Inside photo of window (full view)",
+                        "name": "Close-up photo of shower internal corner (Floor to Wall connection)",
+                        "description": "Close-up photo of shower internal corner (Floor to Wall connection)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Close-up photo of vertical wall corner",
+                        "description": "Close-up photo of vertical wall corner",
                         "inputType": "photo"
                     },
                     {
@@ -108,9 +119,10 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Excessive gaps visible",
-                            "Sealant missing or damaged",
-                            "Daylight visible through gaps"
+                            "Cracks in corners",
+                            "No bond breaker/tape visible",
+                            "Membrane torn at junction",
+                            "Sharp egde"
                         ]
                     },
                     {
@@ -126,14 +138,19 @@
                 ]
             },
             {
-                "name": "Operation & Functionality Test",
-                "description": "Verify that the window opens, closes, and locks smoothly. Tip: Take one photo of the window in the locked position and one in the open position. Ensure the handle or lock is visible in both.",
+                "name": "Penetrations & Drain Sealing",
+                "description": "Check around the water pipes (taps/mixer) and the floor drain (waste). The membrane must tightly seal around these holes with no gaps. Tip: Look closely at the tap mixer coming out of the wall. There should be no gap between the pipe and the waterproofing.",
                 "inputType": "form_group",
                 "orderIndex": 4,
                 "options": [
                     {
-                        "name": "Photo of window (Closed & Locked)",
-                        "description": "Photo of window (Closed & Locked)",
+                        "name": "Close-up photo of Tap/Mixer sealing",
+                        "description": "Close-up photo of Tap/Mixer sealing",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Close-up photo of Floor Waste (Drain)",
+                        "description": "Close-up photo of Floor Waste (Drain)",
                         "inputType": "photo"
                     },
                     {
@@ -141,9 +158,10 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Window stuck or jammed",
-                            "Lock not functioning",
-                            "Handle loose or broken"
+                            "Gaps around pipes",
+                            "Drain not sealed",
+                            "Flange missing",
+                            "Sharp egde"
                         ]
                     },
                     {

@@ -1,0 +1,229 @@
+[
+    {
+        "sectionCode": "INS-01",
+        "name": "Insulation Checklist",
+        "nodes": [
+            {
+                "name": "Room & Item Detail",
+                "description": "Enter room and item identification details.",
+                "inputType": "form_group",
+                "orderIndex": 0,
+                "options": [
+                    {
+                        "name": "Room Code",
+                        "description": "(Fill)",
+                        "inputType": "text"
+                    },
+                    {
+                        "name": "Item Code",
+                        "description": "(Fill)",
+                        "inputType": "text"
+                    },
+                    {
+                        "name": "Notice",
+                        "description": "Perform this check AFTER insulation is installed, but BEFORE plasterboard/lining starts.",
+                        "inputType": "text"
+                    }
+                ]
+            },
+            {
+                "name": "Material Verification (Before Installation)",
+                "description": "Check the packaging bags. Ensure the brand and \"R-Value\" number look correct and match your plan. The material must be dry, not wet or moldy. Tip: Take a close-up photo of the label showing the \"R-Value\" (e.g., R2.0 or R4.0). This proves you used the correct product.",
+                "inputType": "form_group",
+                "orderIndex": 1,
+                "options": [
+                    {
+                        "name": "Photo of the product packaging/label (Close-up)",
+                        "description": "Photo of the product packaging/label (Close-up)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Photo of material storage (Show it is dry)",
+                        "description": "Photo of material storage (Show it is dry)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Unknown or unidentifiable material",
+                            "Looks like waste or reused material",
+                            "No packaging or product info visible",
+                            "Dirty or moldy material",
+                            "Wet or soaking material"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Coverage Completeness (Walls)",
+                "description": "Stand in the center and look around. Ensure insulation fills every space in the wall frame from top to bottom. Check for empty spots in corners, around windows, and behind wires or pipes. Tip: Insulation is like a thermal jacket for your house. Any small gap lets heat escape, so check those tricky little corners!",
+                "inputType": "form_group",
+                "orderIndex": 2,
+                "options": [
+                    {
+                        "name": "Wide shot of the entire wall (Full View)",
+                        "description": "Wide shot of the entire wall (Full View)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Close-up of corners or around windows",
+                        "description": "Close-up of corners or around windows",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Large gaps or openings",
+                            "Missing insulation sections",
+                            "Incomplete coverage",
+                            "Insulation not fitted to cavity size"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Fit & Fluffiness (Installation Quality, Walls)",
+                "description": "The material should look fluffy and hold itself up in the frame. It must not be sliding down (sagging) or squashed too tightly into small spaces. Tip: Insulation needs air to work. If it is squashed flat (compressed), it won't keep the house warm. It should be neat and fluffy, not wrinkled.",
+                "inputType": "form_group",
+                "orderIndex": 3,
+                "options": [
+                    {
+                        "name": "Photo of insulation fit (Side angle to show thickness)",
+                        "description": "Photo of insulation fit (Side angle to show thickness)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Photo showing the insulation is holding itself up",
+                        "description": "Photo showing the insulation is holding itself up",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Falling down / Sagging",
+                            "Squashed / Compressed tightly",
+                            "Loose fit (Falling out)",
+                            "Wet or damp insulation",
+                            "Moldy or dirty insulation"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Coverage Completeness (Ceiling)",
+                "description": "Look up at the ceiling structure. Ensure the insulation covers the entire area flatly. There should be no large gaps between the pieces. Tip: It should look like a continuous blanket covering the roof space. Double-check that the corners and edges are not left empty.",
+                "inputType": "form_group",
+                "orderIndex": 4,
+                "options": [
+                    {
+                        "name": "Wide shot of the entire ceiling (Full View)",
+                        "description": "Wide shot of the entire ceiling (Full View)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Close-up of corners or edge areas",
+                        "description": "Close-up of corners or edge areas",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Large gaps or openings",
+                            "Missing insulation sections",
+                            "Incomplete coverage",
+                            "Insulation not fitted to cavity size"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Fit & Fluffiness (Installation Quality, Ceiling)",
+                "description": "The material should look fluffy and hold itself up in the frame. It must not be sliding down (sagging) or squashed too tightly into small spaces. Tip: Insulation needs air to work. If it is squashed flat (compressed), it won't keep the house warm. It should be neat and fluffy, not wrinkled.",
+                "inputType": "form_group",
+                "orderIndex": 5,
+                "options": [
+                    {
+                        "name": "Photo of insulation fit (Side angle to show thickness)",
+                        "description": "Photo of insulation fit (Side angle to show thickness)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Photo showing the insulation is holding itself up",
+                        "description": "Photo showing the insulation is holding itself up",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Dissatisfied reason tags",
+                        "description": "Select reasons if satisfied is not met",
+                        "inputType": "multi_select",
+                        "options": [
+                            "Falling down / Sagging",
+                            "Squashed / Compressed tightly",
+                            "Loose fit (Falling out)",
+                            "Wet or damp insulation",
+                            "Moldy or dirty insulation"
+                        ]
+                    },
+                    {
+                        "name": "Validation",
+                        "description": "Result",
+                        "inputType": "select",
+                        "options": [
+                            "Satisfied",
+                            "Dissatisfied",
+                            "Not Applicable"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
