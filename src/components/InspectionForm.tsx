@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
-import { Form, Input, Selector, ImageUploader, Button } from 'antd-mobile';
+import { Form, Input, Selector, ImageUploader, Button, ProgressBar } from 'antd-mobile';
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader';
-import { CheckCircleFill, CloseCircleFill, MinusOutline, DownOutline } from 'antd-mobile-icons';
+import { CheckCircleFill, CloseCircleFill, MinusOutline, DownOutline, LoopOutline, ExclamationCircleFill } from 'antd-mobile-icons';
 import { submitInspection, saveNodeResult } from "@/app/inspection-actions";
+import { SpinLoading } from 'antd-mobile';
 
 type NodeTemplate = {
     id: string;
@@ -56,6 +57,12 @@ const ChecklistCard = ({ node, result, instanceId }: {
             return typeof node.options === 'string' ? JSON.parse(node.options) : [];
         } catch { return []; }
     }, [node]);
+
+    // Local state for saving status
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState(false);
+    const [showSavedConfirmation, setShowSavedConfirmation] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     // Local state for form values - Hydrate from result
     const [values, setValues] = useState<Record<string, any>>(() => {
@@ -126,10 +133,40 @@ const ChecklistCard = ({ node, result, instanceId }: {
 
         if (saveTimeout.current) clearTimeout(saveTimeout.current);
 
+        // Reset states when values change
+        setSaveError(false);
+        setShowSavedConfirmation(false);
+
         saveTimeout.current = setTimeout(async () => {
             console.log(`Saving node ${node.name}...`, values);
-            await saveNodeResult(instanceId, node.id, values, calculatedStatus);
-            lastSavedValues.current = currentValuesStr;
+            setIsSaving(true);
+            setProgress(10);
+
+            // Simulate progress
+            const interval = setInterval(() => {
+                setProgress(prev => {
+                    if (prev >= 90) return prev;
+                    return prev + 10;
+                });
+            }, 100);
+
+            try {
+                const result = await saveNodeResult(instanceId, node.id, values, calculatedStatus);
+                clearInterval(interval);
+                if (result.success) {
+                    setProgress(100);
+                    lastSavedValues.current = currentValuesStr;
+                    setShowSavedConfirmation(true);
+                    setTimeout(() => setShowSavedConfirmation(false), 2000); // Hide after 2s
+                } else {
+                    setSaveError(true);
+                }
+            } catch (e) {
+                clearInterval(interval);
+                setSaveError(true);
+            } finally {
+                setIsSaving(false);
+            }
         }, 1000); // 1s debounce
 
         return () => {
@@ -173,12 +210,19 @@ const ChecklistCard = ({ node, result, instanceId }: {
                             <div style={{ marginBottom: 8 }}>
                                 <ImageUploader
                                     upload={uploadImage}
-                                    maxCount={1}
+                                    maxCount={5}
+                                    accept='image/png,image/jpeg,image/jpg'
                                     value={values[field.name] || []}
                                     onChange={(v) => handleChange(field.name, v)}
                                     style={{ '--cell-size': '80px' }}
                                 />
                             </div>
+                            {isSaving && (
+                                <div style={{ marginBottom: 8, padding: '0 4px' }}>
+                                    <ProgressBar percent={progress} style={{ height: 4, borderRadius: 2 }} />
+                                    <div style={{ fontSize: 10, color: '#1890ff', marginTop: 4 }}>Uploading...</div>
+                                </div>
+                            )}
                             <div style={{ fontSize: '0.75rem', color: '#666', lineHeight: 1.2 }}>{field.description || field.name}</div>
                         </div>
                     ))}
@@ -273,6 +317,19 @@ const ChecklistCard = ({ node, result, instanceId }: {
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
                     <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>{node.name}</h3>
+                    {/* Status Indicators - Only Success/Error in Header now */}
+                    {saveError && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#ff4d4f', fontSize: '0.75rem' }}>
+                            <ExclamationCircleFill fontSize={16} />
+                            <span>Failed to save</span>
+                        </div>
+                    )}
+                    {showSavedConfirmation && !isSaving && !saveError && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#52c41a', fontSize: '0.75rem' }}>
+                            <CheckCircleFill fontSize={14} />
+                            <span>Saved</span>
+                        </div>
+                    )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     {getStatusIcon()}
