@@ -1,11 +1,11 @@
 [
     {
-        "sectionCode": "WIN-01",
-        "name": "Window Installation Checklist",
+        "sectionCode": "MV-01",
+        "name": "Masonry Veneer Bricklaying Checklist",
         "nodes": [
             {
                 "name": "Room & Item Detail",
-                "description": "Enter room and window identification details.",
+                "description": "Enter room and item identification details.",
                 "inputType": "form_group",
                 "orderIndex": 0,
                 "options": [
@@ -16,25 +16,30 @@
                     },
                     {
                         "name": "Item Code",
-                        "description": "(Fill, e.g. Window code)",
+                        "description": "(Fill)",
                         "inputType": "text"
                     },
                     {
                         "name": "Notice",
-                        "description": "",
+                        "description": "Perform this check AFTER brick cleaning is finished, usually before handover.",
                         "inputType": "text"
                     }
                 ]
             },
             {
-                "name": "Pre-Installation Check (Opening Readiness)",
-                "description": "Ensure the wall opening is clean, flat, and ready for installation. Tip: Take a wide-angle photo showing the entire opening area.",
+                "name": "Visual Appearance & Straightness",
+                "description": "Sight down the wall from a corner. Is the wall straight (not wavy)? Is it clean (no messy mortar)? Are there any cracked or chipped bricks? Tip: A good wall looks flat like a sheet of paper. If it looks wavy or dirty at first glance, flag it.",
                 "inputType": "form_group",
                 "orderIndex": 1,
                 "options": [
                     {
-                        "name": "Photo of window opening",
-                        "description": "Photo of window opening (full view)",
+                        "name": "Side shot along the wall (Show straightness)",
+                        "description": "Side shot along the wall (Show straightness)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Front wide shot (Show cleanliness)",
+                        "description": "Front wide shot (Show cleanliness)",
                         "inputType": "photo"
                     },
                     {
@@ -42,9 +47,10 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Incorrect dimensions",
-                            "Damaged or dirty opening",
-                            "Uneven or unaligned surface"
+                            "Wall looks wavy/bowed",
+                            "Messy mortar/stains on bricks",
+                            "Chipped or cracked bricks",
+                            "Inconsistent mortar joints"
                         ]
                     },
                     {
@@ -60,14 +66,19 @@
                 ]
             },
             {
-                "name": "Installation & Visual Alignment",
-                "description": "Confirm the window is visually aligned and check the glass condition for any defects. Tip: Take photos of the full frame from both inside and outside, plus a close-up of the glass.",
+                "name": "Weep Holes & Flashing",
+                "description": "Check bottom bricks and above windows. Are there vertical gaps (Weep Holes) every ~1m? Ensure holes are NOT blocked by mortar or soil. Can you see black flashing inside the hole? Tip: These are the house's \"nostrils\" for breathing and draining. Blocked holes will cause mold inside.",
                 "inputType": "form_group",
                 "orderIndex": 2,
                 "options": [
                     {
-                        "name": "Inside photo of window (full view)",
-                        "description": "Inside photo of window (full view)",
+                        "name": "Close-up of bottom hole (Show it is open)",
+                        "description": "Close-up of bottom hole (Show it is open)",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Photo of weep holes above window",
+                        "description": "Photo of weep holes above window",
                         "inputType": "photo"
                     },
                     {
@@ -75,9 +86,10 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Cracked or scratched glass",
-                            "Frame misaligned",
-                            "Visible damage to frame"
+                            "Weep holes blocked by mortar",
+                            "No weep holes visible",
+                            "No flashing visible",
+                            "Weep holes covered by soil/paving"
                         ]
                     },
                     {
@@ -93,14 +105,19 @@
                 ]
             },
             {
-                "name": "Gaps & Seals Inspection",
-                "description": "Check for any visible large gaps or daylight showing between the window frame and the wall. Tip: Capture full view photo of all four edges (top, bottom, left, right) from the interior to verify the fit.",
+                "name": "Expansion Gaps",
+                "description": "Find the long vertical gap on long walls (>6m). CRITICAL: The gap must be filled with SOFT sealant/foam. It must NEVER be filled with hard mortar! Tip: This gap allows the wall to expand in heat. If filled with hard cement, the wall will crack.",
                 "inputType": "form_group",
                 "orderIndex": 3,
                 "options": [
                     {
-                        "name": "Inside photo of window (full view)",
-                        "description": "Inside photo of window (full view)",
+                        "name": "Full photo of the vertical gap",
+                        "description": "Full photo of the vertical gap",
+                        "inputType": "photo"
+                    },
+                    {
+                        "name": "Close-up of filling material (Show it is soft)",
+                        "description": "Close-up of filling material (Show it is soft)",
                         "inputType": "photo"
                     },
                     {
@@ -108,9 +125,9 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Excessive gaps visible",
-                            "Sealant missing or damaged",
-                            "Daylight visible through gaps"
+                            "Filled with hard mortar",
+                            "Gap is crooked/not straight",
+                            "No expansion joints found"
                         ]
                     },
                     {
@@ -126,14 +143,14 @@
                 ]
             },
             {
-                "name": "Operation & Functionality Test",
-                "description": "Verify that the window opens, closes, and locks smoothly. Tip: Take one photo of the window in the locked position and one in the open position. Ensure the handle or lock is visible in both.",
+                "name": "Window Sill Gap",
+                "description": "Check the space between the Window Frame and the Brick Sill below it. CRITICAL: There must be a clear gap (approx. 5-10mm). It must NOT be filled with mortar. Tip: The house frame shrinks over time. Without this gap, the window will crush against the bricks and break.",
                 "inputType": "form_group",
                 "orderIndex": 4,
                 "options": [
                     {
-                        "name": "Photo of window (Closed & Locked)",
-                        "description": "Photo of window (Closed & Locked)",
+                        "name": "Close-up of gap under window frame",
+                        "description": "Close-up of gap under window frame",
                         "inputType": "photo"
                     },
                     {
@@ -141,9 +158,9 @@
                         "description": "Select reasons if satisfied is not met",
                         "inputType": "multi_select",
                         "options": [
-                            "Window stuck or jammed",
-                            "Lock not functioning",
-                            "Handle loose or broken"
+                            "No gap under window frame",
+                            "Gap filled with mortar",
+                            "Close-up of corners or edge areas"
                         ]
                     },
                     {

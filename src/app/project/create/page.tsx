@@ -59,7 +59,7 @@ export default function CreateProjectPage() {
                     fontSize: '16px'
                 }}>
                     <ChevronLeftIcon width={20} style={{ marginRight: '4px' }} />
-                    Discard
+                    Back
                 </Link>
                 <div style={{ flex: 1, textAlign: 'right' }}>
                     <img src="/logo.png" alt="Constructoo" style={{ height: '40px' }} />

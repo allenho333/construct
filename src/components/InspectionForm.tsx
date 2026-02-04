@@ -259,14 +259,15 @@ const ChecklistCard = ({ node, result, instanceId }: {
     const renderValidation = () => {
         if (!validationField) return null;
         const currentVal = values[validationField.name];
+        const options = validationField.options || ['Satisfied', 'Dissatisfied'];
 
         return (
             <div style={{ marginTop: 20 }}>
                 <h4 style={{ color: '#003366', fontSize: '1rem', fontWeight: 700, margin: '0 0 10px 0' }}>Validation</h4>
                 <div style={{ display: 'flex', gap: 12 }}>
-                    {['Satisfied', 'Dissatisfied'].map((opt) => {
+                    {options.map((opt: string) => {
                         const isSelected = currentVal === opt;
-                        const isSatisfied = opt === 'Satisfied';
+                        // Use button style for better touch target
                         return (
                             <div
                                 key={opt}

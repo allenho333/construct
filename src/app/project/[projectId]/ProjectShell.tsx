@@ -59,7 +59,7 @@ export default function ProjectShell({
                     fontSize: '16px'
                 }}>
                     <ChevronLeftIcon width={20} style={{ marginRight: '4px' }} />
-                    {isInspectionDetail ? "Discard" : "Back"}
+                    {isInspectionDetail ? "Back" : "Back"}
                 </Link>
                 <div style={{
                     flex: 1,
